@@ -56,9 +56,11 @@ class BinshopsAdminController extends Controller
     public function index(Request $request)
     {
         $language_id = $request->get('language_id');
-        $posts = BinshopsPostTranslation::orderBy("post_id", "desc")->where('lang_id', $language_id)
-            ->paginate(10);
-
+        // $posts = BinshopsPostTranslation::orderBy("post_id", "desc")->where('lang_id', $language_id)
+        //     ->paginate(10);
+        // List all lang posts instead
+        $posts = BinshopsPostTranslation::orderBy("post_id", "desc")->paginate(10);
+            
         return view("binshopsblog_admin::index", [
             'post_translations'=>$posts,
             'language_id' => $language_id
@@ -211,7 +213,7 @@ class BinshopsAdminController extends Controller
 
         $language_id = $request->get('language_id');
         $language_list = BinshopsLanguage::where('active',true)->get();
-        $ts = BinshopsCategoryTranslation::where("lang_id",$language_id)->limit(1000)->get();
+        $ts = BinshopsCategoryTranslation::where("lang_id",$request['selected_lang'])->limit(1000)->get();
 
         $translation = BinshopsPostTranslation::where(
             [
