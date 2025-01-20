@@ -53,12 +53,20 @@ class BinshopsReaderController extends Controller
             ])->get();
 
             $posts = BinshopsPostTranslation::join('binshops_posts', 'binshops_post_translations.post_id', '=', 'binshops_posts.id')
-                ->where('lang_id', $request->get("lang_id"))
-                ->where("is_published" , '=' , true)
-                ->where('posted_at', '<', Carbon::now()->format('Y-m-d H:i:s'))
-                ->orderBy("posted_at", "desc")
-                ->whereIn('binshops_posts.id', $posts->pluck('id'))
-                ->paginate(config("binshopsblog.per_page", 10));
+            ->join('binshops_post_categories', 'binshops_posts.id', '=', 'binshops_post_categories.post_id')
+            ->join('binshops_category_translations', 'binshops_post_categories.category_id', '=', 'binshops_category_translations.category_id')
+            ->where('binshops_post_translations.lang_id', $request->get("lang_id"))
+            ->where("is_published" , '=' , true)
+            ->where('posted_at', '<', Carbon::now()->format('Y-m-d H:i:s'))
+            ->orderBy("posted_at", "desc")
+            ->whereIn('binshops_posts.id', $posts->pluck('id'))
+            ->select(
+                'binshops_post_translations.*',
+                'binshops_posts.id as post_id',
+                'binshops_posts.posted_at',
+                'binshops_category_translations.category_name',
+            )
+            ->paginate(config("binshopsblog.per_page", 10));
 
             // at the moment we handle this special case (viewing a category) by hard coding in the following two lines.
             // You can easily override this in the view files.
@@ -66,13 +74,20 @@ class BinshopsReaderController extends Controller
             $title = 'Posts in ' . $category->category_name . " category"; // hardcode title here...
         } else {
             $posts = BinshopsPostTranslation::join('binshops_posts', 'binshops_post_translations.post_id', '=', 'binshops_posts.id')
-                ->where('lang_id', $request->get("lang_id"))
+                ->join('binshops_post_categories', 'binshops_posts.id', '=', 'binshops_post_categories.post_id')
+                ->join('binshops_category_translations', 'binshops_post_categories.category_id', '=', 'binshops_category_translations.category_id')
+                ->where('binshops_post_translations.lang_id', $request->get("lang_id"))
                 ->where("is_published" , '=' , true)
                 ->where('posted_at', '<', Carbon::now()->format('Y-m-d H:i:s'))
                 ->orderBy("posted_at", "desc")
+                ->select(
+                    'binshops_post_translations.*',
+                    'binshops_posts.id as post_id',
+                    'binshops_posts.posted_at',
+                    'binshops_category_translations.category_name',
+                )
                 ->paginate(config("binshopsblog.per_page", 10));
         }
-
         //load category hierarchy
         $rootList = BinshopsCategory::roots()->get();
         BinshopsCategory::loadSiblingsWithList($rootList);

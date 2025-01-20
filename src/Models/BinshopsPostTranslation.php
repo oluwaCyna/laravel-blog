@@ -103,7 +103,8 @@ class BinshopsPostTranslation extends Model implements SearchResultInterface
     public function image_url($size = 'medium')
     {
         $this->check_valid_image_size($size);
-        $filename = $this->{"image_" . $size};
+        $filename = $this->{"image_" . $size} ?? "banner-placeholder.png";
+        
         return asset(config("binshopsblog.blog_upload_dir", "blog_images") . "/" . $filename);
     }
 

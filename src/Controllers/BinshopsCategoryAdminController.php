@@ -40,9 +40,9 @@ class BinshopsCategoryAdminController extends Controller
      */
     public function index(Request $request){
         $language_id = $request->get('language_id');
-        // $categories = BinshopsCategoryTranslation::orderBy("category_id")->where('lang_id', $language_id)->paginate(25);
-        // List all lang categories instead
-        $categories = BinshopsCategoryTranslation::orderBy("category_id")->paginate(25);
+        // dd($language_id);
+        $categories = BinshopsCategoryTranslation::orderBy("category_id")->where('lang_id', $language_id)->paginate(25);
+        // dd($categories);
         return view("binshopsblog_admin::categories.index",[
             'categories' => $categories,
             'language_id' => $language_id

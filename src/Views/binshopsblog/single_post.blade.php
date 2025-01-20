@@ -1,43 +1,36 @@
-@extends("layouts.app",['title'=>$post->gen_seo_title()])
-
-@section('blog-custom-css')
+@push('styles')
     <link type="text/css" href="{{ asset('binshops-blog.css') }}" rel="stylesheet">
-@endsection
+@endpush
+<x-layouts.app>
 
-@section("content")
-
-    @if(config("binshopsblog.reading_progress_bar"))
+    @if (config('binshopsblog.reading_progress_bar'))
         <div id="scrollbar">
             <div id="scrollbar-bg"></div>
         </div>
     @endif
 
-    {{--https://github.com/binshops/laravel-blog--}}
-
-    <div class='container'>
-    <div class='row'>
-        <div class='col-sm-12 col-md-12 col-lg-12'>
-
-            @include("binshopsblog::partials.show_errors")
-            @include("binshopsblog::partials.full_post_details")
+    <div class="flex flex-col gap-10 lg:m-20 mt-0 p-10 pt-0">
 
 
-            @if(config("binshopsblog.comments.type_of_comments_to_show","built_in") !== 'disabled')
-                <div class="" id='maincommentscontainer'>
-                    <h2 class='text-center' id='binshopsblogcomments'>Comments</h2>
-                    @include("binshopsblog::partials.show_comments")
-                </div>
-            @else
-                {{--Comments are disabled--}}
-            @endif
-
-
+        @include('binshopsblog::partials.show_errors')
+        <div id="blog-box">
+            @include('binshopsblog::partials.full_post_details')
         </div>
-    </div>
+
+        @if (config('binshopsblog.comments.type_of_comments_to_show', 'built_in') !== 'disabled')
+            <div class="" id='maincommentscontainer'>
+                <h2 class='text-center' id='binshopsblogcomments'>Comments</h2>
+                @include('binshopsblog::partials.show_comments')
+            </div>
+        @else
+            {{-- Comments are disabled --}}
+        @endif
+
+
     </div>
 
-@endsection
+    @push('scripts')
+        <script src="{{ asset('binshops-blog.js') }}"></script>
+    @endpush
 
-@section('blog-custom-js')
-    <script src="{{asset('binshops-blog.js')}}"></script>
-@endsection
+</x-layouts.app>

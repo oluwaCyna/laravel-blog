@@ -1,5 +1,6 @@
 @foreach($category_tree as $category)
-    @php $trans =  $category->categoryTranslations->where('lang_id',$lang_id)->first();@endphp
+    {{-- @php $trans =  $category->categoryTranslations->where('lang_id',$lang_id)->first();@endphp --}}
+    @php $trans =  $category->categoryTranslations->first();@endphp
     @if($trans != null)
         <li class="category-item-wrapper">
             @php $nameChain = $nameChain .'/'. $trans->slug @endphp

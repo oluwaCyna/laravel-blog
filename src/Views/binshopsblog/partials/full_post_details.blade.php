@@ -1,15 +1,15 @@
 @if(\Auth::check() && \Auth::user()->canManageBinshopsBlogPosts())
-    <a href="{{$post->edit_url()}}" class="btn btn-outline-secondary btn-sm pull-right float-right">Edit
+    <a id="admin-edit" href="{{$post->edit_url()}}" class="btn border border-gray-500 text-gray-500 text-sm float-right underline">Edit
         Post</a>
 @endif
 
-<h1 class='blog_title'>{{$post->title}}</h1>
-<h5 class='blog_subtitle'>{{$post->subtitle}}</h5>
+<x-typography.h1 class="text-center text-2xl mb-3">{{$post->title}}</x-typography.h1>
+<x-typography.h3 class="text-center text-xl dark:text-white mb-3">{{$post->subtitle}}</x-typography.h3>
 
 
-<?=$post->image_tag("medium", false, 'd-block mx-auto'); ?>
+<?=$post->image_tag("large", false, 'd-block mx-auto'); ?>
 
-<p class="blog_body_content">
+<p class="">
     {!! $post->post_body_output() !!}
 
     {{--@if(config("binshopsblog.use_custom_view_files")  && $post->use_view_file)--}}
@@ -20,10 +20,3 @@
     {{--   {{ $post->post_body }}          // for safe escaping --}}
     {{--@endif--}}
 </p>
-
-<hr/>
-
-Posted <strong>{{$post->post->posted_at->diffForHumans()}}</strong>
-
-@includeWhen($post->author,"binshopsblog::partials.author",['post'=>$post])
-@includeWhen($categories,"binshopsblog::partials.categories",['categories'=>$categories])
